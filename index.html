@@ -1,0 +1,2000 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mauro Ricardo | Friseursalon Münster – La Bellezza Italiana</title>
+    <meta name="description" content="Friseursalon Mauro Ricardo in Münster – Italienische Friseurkunst. Haarschnitte, Färbung, Styling. 4,6 ★ auf Google. Jetzt Termin vereinbaren.">
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/svg+xml" href="favicon.svg">
+    <link rel="apple-touch-icon" href="favicon.svg">
+    <meta name="theme-color" content="#1A1A1A">
+
+    <!-- Lokal gehostete Schriften (DSGVO-konform, keine Google-Server) -->
+    <link href="fonts/fonts.css" rel="stylesheet">
+
+    <!-- Lokal gehostete Bibliotheken (keine CDN-Verbindung) -->
+    <script src="js/three.min.js"></script>
+    <script src="js/gsap.min.js"></script>
+    <script src="js/ScrollTrigger.min.js"></script>
+
+    <style>
+        /* ===== Variables ===== */
+        :root {
+            --cream:      #FAFAF5;
+            --warm:       #F5EFE0;
+            --gold:       #C9A84C;
+            --gold-lt:    #E8D5A0;
+            --gold-dk:    #A6882E;
+            --dark:       #1A1A1A;
+            --text:       #2C2C2C;
+            --muted:      #6B6B6B;
+            --white:      #FFFFFF;
+            --green-it:   #009246;
+            --red-it:     #CE2B37;
+            --gap:        120px;
+        }
+
+        /* ===== Reset ===== */
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+        html {
+            scroll-behavior: smooth;
+            font-size: 16px;
+            scrollbar-width: none;        /* Firefox */
+            -ms-overflow-style: none;     /* alte Edge/IE */
+        }
+        html::-webkit-scrollbar { width: 0; height: 0; display: none; } /* Chrome/Safari/Edge */
+
+        body {
+            font-family: 'Montserrat', sans-serif;
+            background: var(--cream);
+            color: var(--text);
+            overflow-x: hidden;
+        }
+        body::-webkit-scrollbar { width: 0; height: 0; display: none; }
+
+        /* ===== Nav ===== */
+        nav {
+            position: fixed;
+            inset: 0 0 auto;
+            z-index: 1000;
+            padding: 22px 64px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            transition: all .4s ease;
+        }
+        nav.scrolled {
+            background: rgba(250,250,245,.96);
+            backdrop-filter: blur(12px);
+            padding: 14px 64px;
+            box-shadow: 0 2px 32px rgba(0,0,0,.07);
+        }
+        .nav-logo {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.45rem;
+            font-weight: 700;
+            color: var(--dark);
+            text-decoration: none;
+            letter-spacing: .02em;
+        }
+        .nav-logo em { font-style: normal; color: var(--gold); }
+
+        .nav-links { list-style: none; display: flex; gap: 36px; align-items: center; }
+        .nav-links a {
+            text-decoration: none;
+            font-size: .72rem;
+            font-weight: 500;
+            letter-spacing: .14em;
+            text-transform: uppercase;
+            color: var(--text);
+            transition: color .3s;
+        }
+        .nav-links a:hover { color: var(--gold); }
+        .nav-cta {
+            background: var(--gold) !important;
+            color: var(--white) !important;
+            padding: 10px 22px;
+            border-radius: 2px;
+            transition: background .3s !important;
+        }
+        .nav-cta:hover { background: var(--gold-dk) !important; }
+
+        .hamburger {
+            display: none;
+            flex-direction: column;
+            gap: 5px;
+            cursor: pointer;
+            background: none;
+            border: none;
+            padding: 4px;
+        }
+        .hamburger span {
+            display: block;
+            width: 24px; height: 2px;
+            background: var(--dark);
+            transition: all .3s;
+        }
+
+        /* ===== Hero ===== */
+        #hero {
+            position: relative;
+            height: 100vh;
+            min-height: 700px;
+            display: flex;
+            align-items: center;
+            background: linear-gradient(140deg, #FAFAF5 0%, #F3EBD5 55%, #FAFAF5 100%);
+            overflow: hidden;
+        }
+        #hero-canvas {
+            position: absolute;
+            inset: 0;
+            z-index: 1;
+            pointer-events: none;
+        }
+        /* Big animated scissors as hero background */
+        .hero-bg-scissors {
+            position: absolute;
+            inset: 0;
+            z-index: 2;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            pointer-events: none;
+            overflow: hidden;
+        }
+        .hero-wrap {
+            position: relative;
+            z-index: 10;
+            width: 100%;
+            max-width: 1380px;
+            margin: 0 auto;
+            padding: 0 64px;
+            display: block;
+        }
+        .hero-text {
+            opacity: 0;
+            transform: translateY(30px);
+            max-width: 640px;
+        }
+
+        .eyebrow {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            font-size: .68rem;
+            font-weight: 700;
+            letter-spacing: .22em;
+            text-transform: uppercase;
+            color: var(--gold);
+            margin-bottom: 24px;
+        }
+        .eyebrow::before {
+            content: '';
+            display: block;
+            width: 28px; height: 1px;
+            background: var(--gold);
+        }
+
+        .hero-h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: clamp(2.6rem, 5.5vw, 4.6rem);
+            font-weight: 700;
+            line-height: 1.08;
+            color: var(--dark);
+            margin-bottom: 20px;
+        }
+        .hero-h1 em { font-style: italic; color: var(--gold); }
+
+        .hero-sub {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: clamp(1rem, 1.8vw, 1.3rem);
+            font-style: italic;
+            color: var(--muted);
+            line-height: 1.65;
+            margin-bottom: 42px;
+        }
+
+        .hero-btns { display: flex; gap: 18px; align-items: center; flex-wrap: wrap; }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            text-decoration: none;
+            font-size: .78rem;
+            font-weight: 600;
+            letter-spacing: .12em;
+            text-transform: uppercase;
+            border-radius: 2px;
+            transition: all .3s ease;
+        }
+        .btn-gold {
+            background: var(--gold);
+            color: var(--white);
+            padding: 15px 36px;
+        }
+        .btn-gold:hover {
+            background: var(--gold-dk);
+            transform: translateY(-2px);
+            box-shadow: 0 10px 32px rgba(201,168,76,.35);
+        }
+        .btn-ghost {
+            color: var(--text);
+            padding: 0;
+        }
+        .btn-ghost:hover { color: var(--gold); }
+        .btn-ghost .arr {
+            width: 36px; height: 36px;
+            border: 1px solid currentColor;
+            border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            transition: all .3s;
+        }
+
+        .hero-stats {
+            display: flex;
+            gap: 40px;
+            margin-top: 48px;
+            padding-top: 40px;
+            border-top: 1px solid rgba(201,168,76,.2);
+        }
+        .stat-num {
+            font-family: 'Playfair Display', serif;
+            font-size: 2.1rem;
+            font-weight: 700;
+            color: var(--gold);
+            line-height: 1;
+        }
+        .stat-lbl {
+            font-size: .65rem;
+            font-weight: 600;
+            letter-spacing: .1em;
+            text-transform: uppercase;
+            color: var(--muted);
+            margin-top: 5px;
+        }
+
+        /* ===== Hero Visual (background scissors) ===== */
+        .scissors-wrap {
+            position: relative;
+            width: min(130vh, 1350px);
+            height: min(130vh, 1350px);
+            max-width: 150vw;
+            transform: rotate(270deg) scale(1);
+        }
+        .scissors-svg {
+            width: 100%;
+            height: 100%;
+            opacity: .18;
+            filter: drop-shadow(0 30px 80px rgba(166,136,46,.14));
+            overflow: visible;
+        }
+        .float-badge {
+            position: absolute;
+            z-index: 11;
+            background: rgba(255,255,255,.92);
+            backdrop-filter: blur(6px);
+            border-radius: 8px;
+            padding: 12px 18px;
+            box-shadow: 0 12px 40px rgba(0,0,0,.10);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        /* alle vier innerhalb der rechten Hero-Hälfte */
+        .float-badge.tr { top: 130px;    right: 80px; }    /* oben rechts  */
+        .float-badge.mr { top: 130px;    right: 440px; }   /* oben links   */
+        .float-badge.bl { bottom: 110px; right: 440px; }   /* unten links  */
+        .float-badge.br { bottom: 110px; right: 80px; }    /* unten rechts */
+        .badge-icon { font-size: 1.3rem; }
+        .badge-info strong {
+            display: block;
+            font-family: 'Playfair Display', serif;
+            font-size: 1rem;
+            color: var(--dark);
+        }
+        .badge-info span {
+            font-size: .62rem;
+            font-weight: 600;
+            letter-spacing: .1em;
+            text-transform: uppercase;
+            color: var(--muted);
+        }
+
+        /* Italian flag stripe */
+        .it-stripe {
+            display: flex;
+            height: 3px;
+            width: 80px;
+            border-radius: 2px;
+            overflow: hidden;
+            margin-bottom: 12px;
+        }
+        .it-stripe span { flex: 1; }
+        .it-g { background: var(--green-it); }
+        .it-w { background: var(--white); border: 1px solid #ddd; }
+        .it-r { background: var(--red-it); }
+
+        /* ===== Sections ===== */
+        section { padding: var(--gap) 0; }
+
+        .container {
+            max-width: 1380px;
+            margin: 0 auto;
+            padding: 0 64px;
+        }
+
+        .sec-label {
+            display: inline-flex;
+            align-items: center;
+            gap: 12px;
+            font-size: .63rem;
+            font-weight: 700;
+            letter-spacing: .26em;
+            text-transform: uppercase;
+            color: var(--gold);
+            margin-bottom: 18px;
+        }
+        .sec-label::before, .sec-label::after {
+            content: '';
+            display: block;
+            height: 1px; width: 22px;
+            background: var(--gold);
+        }
+        .sec-title {
+            font-family: 'Playfair Display', serif;
+            font-size: clamp(2rem, 3.5vw, 3rem);
+            font-weight: 700;
+            color: var(--dark);
+            line-height: 1.18;
+            margin-bottom: 20px;
+        }
+        .sec-title em { font-style: italic; color: var(--gold); }
+        .sec-sub {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 1.2rem;
+            font-style: italic;
+            color: var(--muted);
+            line-height: 1.7;
+        }
+        .gold-rule {
+            width: 56px; height: 2px;
+            background: linear-gradient(90deg, var(--gold), transparent);
+            margin: 22px 0;
+        }
+
+        /* ===== About ===== */
+        #about { background: var(--white); }
+        .about-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 100px;
+            align-items: center;
+        }
+        .img-wrap { position: relative; }
+        .img-box {
+            width: 100%;
+            aspect-ratio: 4/5;
+            background: linear-gradient(140deg, #F0E8D0 0%, #E8D5A0 60%, #D4B86A 100%);
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            position: relative;
+        }
+        .img-box::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background-image: repeating-linear-gradient(
+                45deg,
+                rgba(201,168,76,.06) 0px,
+                rgba(201,168,76,.06) 1px,
+                transparent 1px,
+                transparent 28px
+            );
+        }
+        .img-box-icon {
+            position: relative;
+            z-index: 1;
+            opacity: .45;
+        }
+        .img-accent {
+            position: absolute;
+            bottom: -22px; right: -22px;
+            width: 150px; height: 150px;
+            background: var(--gold);
+            border-radius: 4px;
+            z-index: -1;
+        }
+        .quote-card {
+            position: absolute;
+            bottom: 44px; left: -44px;
+            background: var(--cream);
+            border-left: 4px solid var(--gold);
+            padding: 22px 28px;
+            max-width: 270px;
+            box-shadow: 0 20px 60px rgba(0,0,0,.09);
+            z-index: 2;
+        }
+        .quote-it {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 1.05rem;
+            font-style: italic;
+            color: var(--text);
+            line-height: 1.55;
+        }
+        .quote-de {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: .82rem;
+            font-style: italic;
+            color: var(--muted);
+            margin-top: 6px;
+            line-height: 1.5;
+        }
+        .quote-sig {
+            font-size: .62rem;
+            font-weight: 700;
+            letter-spacing: .15em;
+            text-transform: uppercase;
+            color: var(--gold);
+            margin-top: 12px;
+        }
+
+        .about-body p {
+            font-size: .93rem;
+            font-weight: 300;
+            color: var(--muted);
+            line-height: 1.9;
+            margin-bottom: 18px;
+        }
+        .feats {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 22px;
+            margin-top: 38px;
+        }
+        .feat {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+        }
+        .feat-ico {
+            width: 36px; height: 36px;
+            border-radius: 50%;
+            background: rgba(201,168,76,.1);
+            display: flex; align-items: center; justify-content: center;
+            flex-shrink: 0;
+        }
+        .feat-ico svg { width: 15px; height: 15px; }
+        .feat h4 {
+            font-size: .78rem;
+            font-weight: 600;
+            color: var(--dark);
+            margin-bottom: 2px;
+        }
+        .feat p {
+            font-size: .72rem;
+            color: var(--muted);
+            margin: 0 !important;
+            line-height: 1.4 !important;
+        }
+
+        /* ===== Services ===== */
+        #services { background: var(--cream); }
+        .svc-head {
+            text-align: center;
+            max-width: 580px;
+            margin: 0 auto 72px;
+        }
+        .svc-head .sec-label { justify-content: center; }
+        .svc-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 28px;
+        }
+
+        /* 3D flip card */
+        .card-wrap {
+            height: 300px;
+            perspective: 1000px;
+        }
+        .card-3d {
+            width: 100%; height: 100%;
+            position: relative;
+            transform-style: preserve-3d;
+            transition: transform .75s cubic-bezier(.4,0,.2,1);
+            cursor: pointer;
+        }
+        .card-wrap:hover .card-3d { transform: rotateY(180deg); }
+
+        .c-front, .c-back {
+            position: absolute;
+            inset: 0;
+            backface-visibility: hidden;
+            -webkit-backface-visibility: hidden;
+            border-radius: 4px;
+            padding: 36px;
+            display: flex;
+            flex-direction: column;
+        }
+        .c-front {
+            background: var(--white);
+            justify-content: flex-end;
+            border: 1px solid rgba(201,168,76,.1);
+            box-shadow: 0 4px 20px rgba(0,0,0,.04);
+            transition: box-shadow .3s;
+        }
+        .card-wrap:hover .c-front {
+            box-shadow: 0 8px 40px rgba(201,168,76,.12);
+        }
+        .c-back {
+            background: linear-gradient(135deg, var(--gold-dk), var(--gold));
+            transform: rotateY(180deg);
+            justify-content: center;
+        }
+        .c-num {
+            position: absolute;
+            top: 24px; right: 24px;
+            font-family: 'Playfair Display', serif;
+            font-size: 3.2rem;
+            font-weight: 700;
+            color: rgba(201,168,76,.14);
+            line-height: 1;
+        }
+        .c-ico {
+            width: 52px; height: 52px;
+            border-radius: 4px;
+            background: rgba(201,168,76,.08);
+            display: flex; align-items: center; justify-content: center;
+            margin-bottom: 18px;
+        }
+        .c-ico svg { width: 24px; height: 24px; stroke: var(--gold); }
+        .c-name {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: var(--dark);
+            margin-bottom: 5px;
+        }
+        .c-it {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: .88rem;
+            font-style: italic;
+            color: var(--gold);
+        }
+        .c-back .c-name {
+            color: var(--white);
+            font-size: 1.3rem;
+            margin-bottom: 14px;
+        }
+        .c-desc {
+            font-size: .84rem;
+            color: rgba(255,255,255,.88);
+            line-height: 1.7;
+            margin-bottom: 22px;
+            font-weight: 300;
+        }
+        .c-price {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.45rem;
+            font-weight: 600;
+            color: var(--white);
+        }
+        .c-flip-hint {
+            position: absolute;
+            bottom: 26px; right: 26px;
+            font-size: .6rem;
+            letter-spacing: .1em;
+            text-transform: uppercase;
+            color: rgba(255,255,255,.6);
+        }
+
+        /* ===== Hours (dark) ===== */
+        #hours {
+            background: var(--dark);
+            position: relative;
+            overflow: hidden;
+        }
+        #hours::after {
+            content: '';
+            position: absolute;
+            top: -120px; right: -120px;
+            width: 480px; height: 480px;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(201,168,76,.07), transparent 70%);
+            pointer-events: none;
+        }
+        .hours-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 80px;
+            align-items: start;
+        }
+        .hours-grid .sec-title { color: var(--white); }
+        .hours-grid .sec-sub { color: rgba(255,255,255,.55); }
+
+        .hours-list { margin-top: 36px; }
+        .h-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 14px 0;
+            border-bottom: 1px solid rgba(255,255,255,.06);
+        }
+        .h-row:last-child { border-bottom: none; }
+        .h-day {
+            font-size: .8rem;
+            font-weight: 400;
+            color: rgba(255,255,255,.65);
+            letter-spacing: .04em;
+        }
+        .h-time {
+            font-family: 'Playfair Display', serif;
+            font-size: .95rem;
+            color: var(--gold);
+        }
+        .h-time.closed {
+            font-family: 'Montserrat', sans-serif;
+            font-size: .75rem;
+            font-style: italic;
+            color: rgba(255,255,255,.28);
+        }
+        .today .h-day, .today .h-time { font-weight: 600; }
+        .today .h-day { color: var(--gold-lt); }
+
+        .contact-box {
+            background: rgba(255,255,255,.04);
+            border: 1px solid rgba(201,168,76,.18);
+            border-radius: 4px;
+            padding: 40px;
+        }
+        .c-row {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            margin-bottom: 26px;
+        }
+        .c-row:last-of-type { margin-bottom: 0; }
+        .c-ico-circle {
+            width: 44px; height: 44px;
+            border-radius: 50%;
+            background: rgba(201,168,76,.1);
+            border: 1px solid rgba(201,168,76,.3);
+            display: flex; align-items: center; justify-content: center;
+            flex-shrink: 0;
+        }
+        .c-ico-circle svg { width: 17px; height: 17px; stroke: var(--gold); }
+        .c-lbl {
+            font-size: .6rem;
+            font-weight: 700;
+            letter-spacing: .15em;
+            text-transform: uppercase;
+            color: rgba(255,255,255,.35);
+            margin-bottom: 2px;
+        }
+        .c-val {
+            font-size: .88rem;
+            color: var(--white);
+            text-decoration: none;
+            transition: color .3s;
+        }
+        .c-val:hover { color: var(--gold); }
+
+        /* ===== Reviews ===== */
+        #reviews { background: var(--white); }
+        .rev-head { text-align: center; max-width: 560px; margin: 0 auto 56px; }
+        .rev-head .sec-label { justify-content: center; }
+        .rating-row {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 18px;
+            margin-top: 16px;
+        }
+        .r-big {
+            font-family: 'Playfair Display', serif;
+            font-size: 4rem;
+            font-weight: 700;
+            color: var(--gold);
+            line-height: 1;
+        }
+        .r-stars { display: flex; gap: 3px; color: var(--gold); font-size: 1.1rem; }
+        .r-meta {
+            font-size: .72rem;
+            color: var(--muted);
+            letter-spacing: .1em;
+            text-transform: uppercase;
+            margin-top: 4px;
+        }
+        .rev-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 28px;
+        }
+        .rev-card {
+            background: var(--cream);
+            border-radius: 4px;
+            padding: 34px;
+            position: relative;
+            border: 1px solid rgba(201,168,76,.07);
+        }
+        .rev-q {
+            position: absolute;
+            top: 18px; right: 22px;
+            font-family: 'Playfair Display', serif;
+            font-size: 4.5rem;
+            color: rgba(201,168,76,.13);
+            line-height: 1;
+        }
+        .rev-stars { display: flex; gap: 3px; color: var(--gold); margin-bottom: 14px; }
+        .rev-text {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 1.05rem;
+            font-style: italic;
+            color: var(--text);
+            line-height: 1.7;
+            margin-bottom: 22px;
+        }
+        .rev-author { display: flex; align-items: center; gap: 12px; }
+        .rev-avatar {
+            width: 40px; height: 40px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--gold-lt), var(--gold));
+            display: flex; align-items: center; justify-content: center;
+            font-family: 'Playfair Display', serif;
+            font-size: 1rem;
+            color: var(--white);
+            font-weight: 600;
+            flex-shrink: 0;
+        }
+        .rev-name {
+            font-size: .78rem;
+            font-weight: 600;
+            color: var(--dark);
+        }
+        .rev-date {
+            font-size: .67rem;
+            color: var(--muted);
+            margin-top: 1px;
+        }
+
+        /* ===== CTA ===== */
+        #cta {
+            background: linear-gradient(135deg, var(--gold-dk) 0%, var(--gold) 100%);
+            padding: 100px 0;
+            text-align: center;
+        }
+        #cta .sec-label { justify-content: center; color: rgba(255,255,255,.7); }
+        #cta .sec-label::before, #cta .sec-label::after { background: rgba(255,255,255,.5); }
+        #cta .sec-title { color: var(--white); margin-bottom: 14px; }
+        #cta .sec-sub { color: rgba(255,255,255,.78); max-width: 500px; margin: 0 auto; }
+        .btn-white {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            background: var(--white);
+            color: var(--gold-dk);
+            text-decoration: none;
+            padding: 18px 46px;
+            font-size: .82rem;
+            font-weight: 700;
+            letter-spacing: .12em;
+            text-transform: uppercase;
+            border-radius: 2px;
+            margin-top: 40px;
+            transition: all .3s ease;
+        }
+        .btn-white:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 14px 44px rgba(0,0,0,.22);
+        }
+
+        /* ===== Location ===== */
+        #location { background: var(--cream); }
+        .loc-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 80px;
+            align-items: center;
+        }
+        .loc-info-box {
+            background: var(--white);
+            border: 1px solid rgba(201,168,76,.1);
+            border-radius: 4px;
+            padding: 30px;
+            margin-top: 28px;
+            font-size: .88rem;
+            line-height: 2;
+            color: var(--text);
+        }
+        .loc-info-box a { color: var(--gold); text-decoration: none; }
+        .map-box {
+            border-radius: 4px;
+            overflow: hidden;
+            box-shadow: 0 20px 60px rgba(0,0,0,.08);
+            height: 420px;
+        }
+        .map-box iframe { width: 100%; height: 100%; border: none; }
+        /* Google Maps Consent-Gate */
+        .map-consent {
+            width: 100%; height: 100%;
+            background: linear-gradient(140deg, #F0E8D0 0%, #E8D5A0 60%, #D4B86A 100%);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 32px;
+            position: relative;
+        }
+        .map-consent::before {
+            content: '';
+            position: absolute; inset: 0;
+            background-image: repeating-linear-gradient(45deg, rgba(201,168,76,.06) 0, rgba(201,168,76,.06) 1px, transparent 1px, transparent 26px);
+        }
+        .map-consent > * { position: relative; z-index: 1; }
+        .map-consent h3 {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.35rem;
+            color: var(--dark);
+            margin: 14px 0 8px;
+        }
+        .map-consent p {
+            font-size: .82rem;
+            color: var(--text);
+            max-width: 360px;
+            line-height: 1.65;
+            margin-bottom: 22px;
+        }
+        .map-remember {
+            display: flex; align-items: center; gap: 8px;
+            font-size: .72rem; color: var(--text);
+            margin-top: 16px; cursor: pointer;
+        }
+        .map-dslink {
+            font-size: .7rem; color: var(--gold-dk);
+            margin-top: 6px;
+        }
+
+        /* ===== Footer ===== */
+        footer {
+            background: var(--dark);
+            padding: 60px 0 36px;
+        }
+        .foot-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            padding-bottom: 40px;
+            border-bottom: 1px solid rgba(255,255,255,.07);
+            margin-bottom: 28px;
+        }
+        .foot-logo {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.6rem;
+            font-weight: 700;
+            color: var(--white);
+        }
+        .foot-logo em { font-style: normal; color: var(--gold); }
+        .foot-tag {
+            font-family: 'Cormorant Garamond', serif;
+            font-style: italic;
+            color: rgba(255,255,255,.45);
+            font-size: .9rem;
+            margin-top: 4px;
+        }
+        .foot-links { list-style: none; display: flex; gap: 28px; }
+        .foot-links a {
+            font-size: .72rem;
+            font-weight: 500;
+            letter-spacing: .08em;
+            text-transform: uppercase;
+            color: rgba(255,255,255,.45);
+            text-decoration: none;
+            transition: color .3s;
+        }
+        .foot-links a:hover { color: var(--gold); }
+        .foot-bottom {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .foot-copy {
+            font-size: .7rem;
+            color: rgba(255,255,255,.28);
+        }
+        .foot-it {
+            font-family: 'Cormorant Garamond', serif;
+            font-style: italic;
+            font-size: .85rem;
+            color: var(--gold);
+        }
+
+        /* ===== Cookie-Banner ===== */
+        .cookie-banner {
+            position: fixed;
+            left: 24px; right: 24px; bottom: 24px;
+            z-index: 2000;
+            max-width: 760px;
+            margin: 0 auto;
+            background: var(--dark);
+            color: rgba(255,255,255,.82);
+            border: 1px solid rgba(201,168,76,.25);
+            border-radius: 8px;
+            box-shadow: 0 20px 60px rgba(0,0,0,.35);
+            padding: 26px 30px;
+            display: none;
+            transform: translateY(20px);
+            opacity: 0;
+        }
+        .cookie-banner.show { display: block; }
+        .cookie-it {
+            font-family: 'Cormorant Garamond', serif;
+            font-style: italic;
+            font-size: .8rem;
+            color: var(--gold);
+            letter-spacing: .04em;
+            margin-bottom: 6px;
+        }
+        .cookie-banner h4 {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.15rem;
+            color: var(--white);
+            margin-bottom: 8px;
+        }
+        .cookie-banner p {
+            font-size: .78rem;
+            line-height: 1.65;
+            margin-bottom: 18px;
+        }
+        .cookie-banner p a { color: var(--gold); text-decoration: underline; }
+        .cookie-actions { display: flex; gap: 12px; flex-wrap: wrap; }
+        .cookie-actions .btn { padding: 12px 26px; font-size: .72rem; cursor: pointer; border: none; }
+        .btn-outline {
+            background: transparent;
+            color: rgba(255,255,255,.7);
+            border: 1px solid rgba(255,255,255,.25) !important;
+            padding: 12px 26px;
+            font-size: .72rem;
+            font-weight: 600;
+            letter-spacing: .12em;
+            text-transform: uppercase;
+            border-radius: 2px;
+            cursor: pointer;
+            transition: all .3s;
+        }
+        .btn-outline:hover { border-color: var(--gold) !important; color: var(--gold); }
+
+        /* ===== Scroll reveal utility ===== */
+        .reveal { opacity: 0; transform: translateY(44px); }
+
+        /* ===== Responsive ===== */
+        @media (max-width: 1100px) {
+            nav, nav.scrolled { padding-left: 32px; padding-right: 32px; }
+            .container { padding: 0 32px; }
+            .hero-wrap { padding: 0 32px; gap: 50px; }
+            .about-grid { grid-template-columns: 1fr; gap: 60px; }
+            .svc-grid { grid-template-columns: repeat(2, 1fr); }
+            .hours-grid { grid-template-columns: 1fr; gap: 50px; }
+            .rev-grid { grid-template-columns: 1fr 1fr; }
+            .loc-grid { grid-template-columns: 1fr; }
+            .foot-top { flex-direction: column; gap: 28px; }
+            .foot-bottom { flex-direction: column; gap: 8px; text-align: center; }
+        }
+        @media (max-width: 768px) {
+            :root { --gap: 80px; }
+            .hero-bg-scissors { transform: translateX(0); }
+            .scissors-wrap { transform: rotate(270deg); width: 150vw; height: 150vw; }
+            .scissors-svg { opacity: .10; }
+            .float-badge { display: none; }
+            .nav-links { display: none; }
+            .hamburger { display: flex; }
+            .svc-grid { grid-template-columns: 1fr; }
+            .rev-grid { grid-template-columns: 1fr; }
+            .feats { grid-template-columns: 1fr; }
+        }
+
+        /* ===== Mobile nav panel ===== */
+        .mobile-nav {
+            display: none;
+            position: fixed;
+            top: 60px; left: 0; right: 0;
+            background: rgba(250,250,245,.98);
+            backdrop-filter: blur(12px);
+            padding: 20px 32px 32px;
+            box-shadow: 0 12px 40px rgba(0,0,0,.1);
+            flex-direction: column;
+            gap: 0;
+            z-index: 999;
+        }
+        .mobile-nav.open { display: flex; }
+        .mobile-nav a {
+            display: block;
+            text-decoration: none;
+            font-size: .85rem;
+            font-weight: 500;
+            letter-spacing: .08em;
+            text-transform: uppercase;
+            color: var(--text);
+            padding: 14px 0;
+            border-bottom: 1px solid rgba(0,0,0,.05);
+            transition: color .3s;
+        }
+        .mobile-nav a:hover { color: var(--gold); }
+        .mobile-nav a:last-child {
+            border-bottom: none;
+            margin-top: 10px;
+            background: var(--gold);
+            color: var(--white);
+            padding: 14px 20px;
+            text-align: center;
+            border-radius: 2px;
+        }
+    </style>
+</head>
+<body>
+
+<!-- ===== NAVIGATION ===== -->
+<nav id="navbar">
+    <a href="#" class="nav-logo">Mauro <em>Ricardo</em></a>
+    <ul class="nav-links">
+        <li><a href="#about">Über uns</a></li>
+        <li><a href="#services">Leistungen</a></li>
+        <li><a href="#hours">Öffnungszeiten</a></li>
+        <li><a href="#reviews">Bewertungen</a></li>
+        <li><a href="#location">Kontakt</a></li>
+        <li><a href="tel:025116244934" class="nav-cta">Termin buchen</a></li>
+    </ul>
+    <button class="hamburger" id="burger" aria-label="Menü öffnen">
+        <span></span><span></span><span></span>
+    </button>
+</nav>
+
+<!-- Mobile nav -->
+<div class="mobile-nav" id="mobileNav">
+    <a href="#about"    onclick="closeMob()">Über uns</a>
+    <a href="#services" onclick="closeMob()">Leistungen</a>
+    <a href="#hours"    onclick="closeMob()">Öffnungszeiten</a>
+    <a href="#reviews"  onclick="closeMob()">Bewertungen</a>
+    <a href="#location" onclick="closeMob()">Kontakt</a>
+    <a href="tel:025116244934" onclick="closeMob()">Termin buchen</a>
+</div>
+
+<!-- ===== HERO ===== -->
+<section id="hero">
+    <canvas id="hero-canvas"></canvas>
+
+    <div class="hero-wrap">
+        <div class="hero-text">
+            <div class="it-stripe"><span class="it-g"></span><span class="it-w"></span><span class="it-r"></span></div>
+            <div class="eyebrow">La Bellezza Italiana · Münster</div>
+            <h1 class="hero-h1">
+                Die Kunst<br>
+                des <em>Schnitts</em><br>
+                aus Italien
+            </h1>
+            <p class="hero-sub">
+                Dove la tradizione incontra la modernità —<br>
+                Wo Leidenschaft auf Handwerk trifft
+            </p>
+            <div class="hero-btns">
+                <a href="tel:025116244934" class="btn btn-gold">
+                    Termin vereinbaren
+                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+                </a>
+                <a href="#about" class="btn btn-ghost">
+                    Mehr erfahren
+                    <span class="arr">
+                        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+                    </span>
+                </a>
+            </div>
+            <div class="hero-stats">
+                <div>
+                    <div class="stat-num">4,6 ★</div>
+                    <div class="stat-lbl">Google Bewertung</div>
+                </div>
+                <div>
+                    <div class="stat-num">84+</div>
+                    <div class="stat-lbl">Rezensionen</div>
+                </div>
+                <div>
+                    <div class="stat-num">100%</div>
+                    <div class="stat-lbl">Italian Style</div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Big animated scissors as full hero background -->
+    <div class="hero-bg-scissors">
+            <div class="scissors-wrap">
+                <!-- Animated premium scissors SVG -->
+                <svg class="scissors-svg" id="svg-sc" viewBox="0 0 300 300" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <defs>
+                        <linearGradient id="blade" x1="0" y1="0" x2="1" y2="1">
+                            <stop offset="0"   stop-color="#E8D5A0"/>
+                            <stop offset=".5"  stop-color="#C9A84C"/>
+                            <stop offset="1"   stop-color="#A6882E"/>
+                        </linearGradient>
+                        <linearGradient id="bladeShine" x1="0" y1="0" x2="1" y2="1">
+                            <stop offset="0"   stop-color="#FFFFFF" stop-opacity=".9"/>
+                            <stop offset=".5"  stop-color="#F5EFE0" stop-opacity=".4"/>
+                            <stop offset="1"   stop-color="#E8D5A0" stop-opacity=".1"/>
+                        </linearGradient>
+                        <radialGradient id="ringGlow" cx=".5" cy=".5" r=".5">
+                            <stop offset="0"  stop-color="#C9A84C" stop-opacity=".10"/>
+                            <stop offset="1"  stop-color="#C9A84C" stop-opacity="0"/>
+                        </radialGradient>
+                    </defs>
+
+                    <!-- Decorative rings -->
+                    <circle cx="150" cy="150" r="142" fill="url(#ringGlow)"/>
+                    <circle id="ring-rot" cx="150" cy="150" r="138" stroke="#C9A84C" stroke-width="1" stroke-dasharray="2 10" opacity=".4" style="transform-origin:150px 150px"/>
+                    <circle cx="150" cy="150" r="118" stroke="#C9A84C" stroke-width=".6" opacity=".18"/>
+                    <circle cx="150" cy="150" r="95"  stroke="#C9A84C" stroke-width=".5" stroke-dasharray="3 6" opacity=".12"/>
+
+                    <!-- ===== SCISSORS (pivot at 150,180) ===== -->
+                    <!-- Blade group 1 (left blade + right handle) -->
+                    <g id="sc-b1" style="transform-origin:150px 180px">
+                        <!-- finger ring -->
+                        <ellipse cx="108" cy="236" rx="26" ry="19"
+                            stroke="url(#blade)" stroke-width="8" fill="none"
+                            transform="rotate(-34,108,236)"/>
+                        <!-- shank from ring to pivot -->
+                        <path d="M122 220 Q140 202 150 180"
+                            stroke="url(#blade)" stroke-width="8" stroke-linecap="round" fill="none"/>
+                        <!-- blade -->
+                        <path d="M150 180 L226 64 Q231 57 224 55 L150 168 Z"
+                            fill="url(#blade)"/>
+                        <path d="M150 180 L224 66 Q228 60 223 59 L152 172 Z"
+                            fill="url(#bladeShine)"/>
+                        <!-- cutting edge -->
+                        <path d="M150 168 L224 55"
+                            stroke="#FFF8E8" stroke-width="1.4" stroke-linecap="round" opacity=".75"/>
+                    </g>
+
+                    <!-- Blade group 2 (right blade + left handle) -->
+                    <g id="sc-b2" style="transform-origin:150px 180px">
+                        <ellipse cx="192" cy="236" rx="26" ry="19"
+                            stroke="url(#blade)" stroke-width="8" fill="none"
+                            transform="rotate(34,192,236)"/>
+                        <path d="M178 220 Q160 202 150 180"
+                            stroke="url(#blade)" stroke-width="8" stroke-linecap="round" fill="none"/>
+                        <path d="M150 180 L74 64 Q69 57 76 55 L150 168 Z"
+                            fill="url(#blade)"/>
+                        <path d="M150 180 L76 66 Q72 60 77 59 L148 172 Z"
+                            fill="url(#bladeShine)" opacity=".6"/>
+                        <path d="M150 168 L76 55"
+                            stroke="#FFF8E8" stroke-width="1.4" stroke-linecap="round" opacity=".6"/>
+                    </g>
+
+                    <!-- Screw pivot -->
+                    <circle cx="150" cy="180" r="11" fill="url(#blade)"/>
+                    <circle cx="150" cy="180" r="11" stroke="#A6882E" stroke-width="1" fill="none"/>
+                    <circle cx="150" cy="180" r="4.5" fill="#FAFAF5"/>
+                    <path d="M147 180h6M150 177v6" stroke="#A6882E" stroke-width="1" stroke-linecap="round"/>
+
+                    <!-- Falling hair snippets -->
+                    <g opacity=".5" stroke="#C9A84C" stroke-width="1.4" stroke-linecap="round" fill="none">
+                        <path id="snip1" d="M150 36 q6 8 0 16 q-6 8 0 16"/>
+                        <path id="snip2" d="M178 44 q5 6 0 12 q-5 6 0 12"/>
+                        <path id="snip3" d="M122 44 q-5 6 0 12 q5 6 0 12"/>
+                    </g>
+                </svg>
+            </div>
+    </div>
+
+    <!-- Floating badges -->
+    <div class="float-badge tr">
+        <div class="badge-icon">⭐</div>
+        <div class="badge-info">
+            <strong>4,6 / 5</strong>
+            <span>Google Reviews</span>
+        </div>
+    </div>
+    <div class="float-badge bl">
+        <div class="badge-icon">🇮🇹</div>
+        <div class="badge-info">
+            <strong>100% Italy</strong>
+            <span>Stile autentico</span>
+        </div>
+    </div>
+    <div class="float-badge mr">
+        <div class="badge-icon">✂️</div>
+        <div class="badge-info">
+            <strong>Uomo &amp; Donna</strong>
+            <span>Damen &amp; Herren</span>
+        </div>
+    </div>
+    <div class="float-badge br">
+        <div class="badge-icon">⏰</div>
+        <div class="badge-info">
+            <strong>Termintreue</strong>
+            <span>Sempre puntuale</span>
+        </div>
+    </div>
+</section>
+
+<!-- ===== ABOUT ===== -->
+<section id="about">
+    <div class="container">
+        <div class="about-grid">
+            <div class="img-wrap">
+                <div class="img-box">
+                    <div class="img-box-icon">
+                        <svg width="100" height="100" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <circle cx="50" cy="50" r="42" stroke="#C9A84C" stroke-width="1.5"/>
+                            <path d="M50 50 L78 22 M50 50 L22 22 M50 50 L44 85 M50 50 L56 85"
+                                stroke="#C9A84C" stroke-width="2.5" stroke-linecap="round"/>
+                            <circle cx="50" cy="50" r="5.5" fill="#C9A84C"/>
+                            <circle cx="50" cy="50" r="2"   fill="#F0E8D0"/>
+                        </svg>
+                    </div>
+                </div>
+                <div class="img-accent"></div>
+                <div class="quote-card">
+                    <p class="quote-it">"Con le mani, con il cuore, con la passione."</p>
+                    <p class="quote-de">„Mit den Händen, dem Herzen und der Leidenschaft."</p>
+                    <p class="quote-sig">— Mauro Ricardo</p>
+                </div>
+            </div>
+
+            <div class="about-body">
+                <div class="sec-label">La nostra storia</div>
+                <h2 class="sec-title">
+                    Italienische Kunst<br>
+                    im Herzen von <em>Münster</em>
+                </h2>
+                <div class="gold-rule"></div>
+                <p>Willkommen bei Mauro Ricardo — einem Ort, an dem die reiche Friseurkunst Italiens auf die pulsierende Kultur Münsters trifft. Unser Salon steht seit Jahren für Handwerk, Leidenschaft und den unverkennbaren Stil, der nur aus Italien kommen kann.</p>
+                <p>Jeder Schnitt ist für uns mehr als eine Dienstleistung — es ist eine Kunstform. Inspiriert von den besten Friseuren Mailands, Roms und Florenz bringen wir das Beste Italiens direkt zu Ihnen.</p>
+                <p>Mit über 84 begeisterten Google-Bewertungen und einem Durchschnitt von 4,6 Sternen sind wir stolz darauf, ein vertrauensvoller Partner für Schönheit und Stil in Münster zu sein.</p>
+                <div class="feats">
+                    <div class="feat">
+                        <div class="feat-ico">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="#C9A84C" stroke-width="2">
+                                <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+                            </svg>
+                        </div>
+                        <div>
+                            <h4>Top-Bewertungen</h4>
+                            <p>4,6 ★ auf Google · 84+ Rezensionen</p>
+                        </div>
+                    </div>
+                    <div class="feat">
+                        <div class="feat-ico">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="#C9A84C" stroke-width="2">
+                                <circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 3"/>
+                            </svg>
+                        </div>
+                        <div>
+                            <h4>Pünktliche Termine</h4>
+                            <p>Termintreue wird großgeschrieben</p>
+                        </div>
+                    </div>
+                    <div class="feat">
+                        <div class="feat-ico">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="#C9A84C" stroke-width="2">
+                                <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
+                            </svg>
+                        </div>
+                        <div>
+                            <h4>Mit Leidenschaft</h4>
+                            <p>Handwerk aus Überzeugung</p>
+                        </div>
+                    </div>
+                    <div class="feat">
+                        <div class="feat-ico">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="#C9A84C" stroke-width="2">
+                                <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
+                                <circle cx="9" cy="7" r="4"/>
+                                <path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+                            </svg>
+                        </div>
+                        <div>
+                            <h4>Uomo &amp; Donna</h4>
+                            <p>Für Damen und Herren</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ===== SERVICES ===== -->
+<section id="services">
+    <div class="container">
+        <div class="svc-head reveal">
+            <div class="sec-label">I Nostri Servizi</div>
+            <h2 class="sec-title">Unsere <em>Leistungen</em></h2>
+            <p class="sec-sub">Bewegen Sie die Maus über eine Karte für Details</p>
+        </div>
+        <div class="svc-grid">
+
+            <!-- Card 1 -->
+            <div class="card-wrap reveal">
+                <div class="card-3d">
+                    <div class="c-front">
+                        <span class="c-num">01</span>
+                        <div class="c-ico">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="#C9A84C" stroke-width="1.5">
+                                <path d="M6 3v18"/><circle cx="6" cy="7" r="2"/><circle cx="6" cy="17" r="2"/>
+                                <path d="M10 8h8M10 16h8M10 12h5"/>
+                            </svg>
+                        </div>
+                        <div class="c-name">Haarschnitt</div>
+                        <div class="c-it">Taglio di capelli</div>
+                    </div>
+                    <div class="c-back">
+                        <span class="c-num" style="color:rgba(255,255,255,.15)">01</span>
+                        <div class="c-name">Haarschnitt</div>
+                        <p class="c-desc">Professioneller Schnitt für Damen und Herren — individuell auf Ihre Gesichtsform und Ihren Stil abgestimmt. Mit Waschen und Föhnen.</p>
+                        <div class="c-price">ab 25 €</div>
+                        <div class="c-flip-hint">← Zurück</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Card 2 -->
+            <div class="card-wrap reveal">
+                <div class="card-3d">
+                    <div class="c-front">
+                        <span class="c-num">02</span>
+                        <div class="c-ico">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="#C9A84C" stroke-width="1.5">
+                                <path d="M3 12c0-4.97 4.03-9 9-9s9 4.03 9 9"/>
+                                <path d="M3 12c0 4.97 4.03 9 9 9s9-4.03 9-9"/>
+                                <path d="M12 3v18M3 12h18"/>
+                            </svg>
+                        </div>
+                        <div class="c-name">Haarfärbung</div>
+                        <div class="c-it">Colorazione</div>
+                    </div>
+                    <div class="c-back">
+                        <span class="c-num" style="color:rgba(255,255,255,.15)">02</span>
+                        <div class="c-name">Haarfärbung</div>
+                        <p class="c-desc">Von natürlichen Tönen bis zu lebhaften Farben — unsere Experten zaubern Ihnen den perfekten Look mit hochwertigen Produkten.</p>
+                        <div class="c-price">auf Anfrage</div>
+                        <div class="c-flip-hint">← Zurück</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Card 3 -->
+            <div class="card-wrap reveal">
+                <div class="card-3d">
+                    <div class="c-front">
+                        <span class="c-num">03</span>
+                        <div class="c-ico">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="#C9A84C" stroke-width="1.5">
+                                <path d="M12 2C6.48 2 2 7 2 12s4.48 10 10 10 10-5 10-10S17.52 2 12 2"/>
+                                <path d="M8 12c0-2.21 1.79-4 4-4s4 1.79 4 4-1.79 4-4 4-4-1.79-4-4z"/>
+                            </svg>
+                        </div>
+                        <div class="c-name">Strähnen &amp; Balayage</div>
+                        <div class="c-it">Mèches &amp; Balayage</div>
+                    </div>
+                    <div class="c-back">
+                        <span class="c-num" style="color:rgba(255,255,255,.15)">03</span>
+                        <div class="c-name">Strähnen &amp; Balayage</div>
+                        <p class="c-desc">Natürliche Highlights oder dramatische Kontraste — wir meistern alle Techniken von klassischen Strähnen bis zum modernen Balayage.</p>
+                        <div class="c-price">auf Anfrage</div>
+                        <div class="c-flip-hint">← Zurück</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Card 4 -->
+            <div class="card-wrap reveal">
+                <div class="card-3d">
+                    <div class="c-front">
+                        <span class="c-num">04</span>
+                        <div class="c-ico">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="#C9A84C" stroke-width="1.5">
+                                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+                                <circle cx="12" cy="7" r="4"/>
+                            </svg>
+                        </div>
+                        <div class="c-name">Bartpflege</div>
+                        <div class="c-it">Cura della barba</div>
+                    </div>
+                    <div class="c-back">
+                        <span class="c-num" style="color:rgba(255,255,255,.15)">04</span>
+                        <div class="c-name">Bartpflege</div>
+                        <p class="c-desc">Trimmen, formen und pflegen des Bartes nach Ihren Wünschen. Mit warmem Handtuch und Pflegeprodukten für ein makelloses Finish.</p>
+                        <div class="c-price">ab 15 €</div>
+                        <div class="c-flip-hint">← Zurück</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Card 5 -->
+            <div class="card-wrap reveal">
+                <div class="card-3d">
+                    <div class="c-front">
+                        <span class="c-num">05</span>
+                        <div class="c-ico">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="#C9A84C" stroke-width="1.5">
+                                <path d="M12 2a7 7 0 0 1 7 7c0 5-7 13-7 13S5 14 5 9a7 7 0 0 1 7-7z"/>
+                                <circle cx="12" cy="9" r="2.5"/>
+                            </svg>
+                        </div>
+                        <div class="c-name">Waschen &amp; Styling</div>
+                        <div class="c-it">Lavaggio &amp; Piega</div>
+                    </div>
+                    <div class="c-back">
+                        <span class="c-num" style="color:rgba(255,255,255,.15)">05</span>
+                        <div class="c-name">Waschen &amp; Styling</div>
+                        <p class="c-desc">Entspannende Haarwäsche mit Kopfmassage, gefolgt von professionellem Föhnen und Styling für Ihren perfekten Auftritt.</p>
+                        <div class="c-price">ab 18 €</div>
+                        <div class="c-flip-hint">← Zurück</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Card 6 -->
+            <div class="card-wrap reveal">
+                <div class="card-3d">
+                    <div class="c-front">
+                        <span class="c-num">06</span>
+                        <div class="c-ico">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="#C9A84C" stroke-width="1.5">
+                                <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+                            </svg>
+                        </div>
+                        <div class="c-name">Haarbehandlung</div>
+                        <div class="c-it">Trattamento intensivo</div>
+                    </div>
+                    <div class="c-back">
+                        <span class="c-num" style="color:rgba(255,255,255,.15)">06</span>
+                        <div class="c-name">Haarbehandlung</div>
+                        <p class="c-desc">Intensive Pflegebehandlungen für geschädigtes, trockenes oder feines Haar — mit exklusiven italienischen Produkten für seidenweiches Ergebnis.</p>
+                        <div class="c-price">ab 20 €</div>
+                        <div class="c-flip-hint">← Zurück</div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</section>
+
+<!-- ===== HOURS ===== -->
+<section id="hours">
+    <div class="container">
+        <div class="hours-grid">
+            <div>
+                <div class="sec-label">Orari di apertura</div>
+                <h2 class="sec-title">Wir freuen uns<br>auf Ihren <em>Besuch</em></h2>
+                <p class="sec-sub">Rufen Sie uns an und wir vereinbaren Ihren persönlichen Wunschtermin.</p>
+                <div class="hours-list">
+                    <div class="h-row today"><span class="h-day">Montag</span>     <span class="h-time">09:00 – 18:00</span></div>
+                    <div class="h-row today"><span class="h-day">Dienstag</span>   <span class="h-time">09:00 – 18:00</span></div>
+                    <div class="h-row today"><span class="h-day">Mittwoch</span>   <span class="h-time">09:00 – 18:00</span></div>
+                    <div class="h-row today"><span class="h-day">Donnerstag</span> <span class="h-time">09:00 – 18:00</span></div>
+                    <div class="h-row today"><span class="h-day">Freitag</span>    <span class="h-time">09:00 – 18:00</span></div>
+                    <div class="h-row"><span class="h-day">Samstag</span>   <span class="h-time closed">Geschlossen</span></div>
+                    <div class="h-row"><span class="h-day">Sonntag</span>   <span class="h-time closed">Geschlossen</span></div>
+                </div>
+            </div>
+            <div class="contact-box reveal">
+                <div class="c-row">
+                    <div class="c-ico-circle">
+                        <svg viewBox="0 0 24 24" fill="none" stroke-width="2">
+                            <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 12 19.79 19.79 0 0 1 1.6 3.45 2 2 0 0 1 3.57 1h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 8.69a16 16 0 0 0 5.92 5.92l.89-.9a2 2 0 0 1 2.11-.45c.908.339 1.85.573 2.81.7A2 2 0 0 1 21.73 16" stroke="#C9A84C"/>
+                        </svg>
+                    </div>
+                    <div>
+                        <div class="c-lbl">Telefon</div>
+                        <a href="tel:025116244934" class="c-val">0251 1624493</a>
+                    </div>
+                </div>
+                <div class="c-row">
+                    <div class="c-ico-circle">
+                        <svg viewBox="0 0 24 24" fill="none" stroke-width="2">
+                            <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" stroke="#C9A84C"/>
+                            <circle cx="12" cy="10" r="3" stroke="#C9A84C"/>
+                        </svg>
+                    </div>
+                    <div>
+                        <div class="c-lbl">Adresse</div>
+                        <a href="https://maps.google.com/?q=Idenbrockplatz+5A+48159+Munster" target="_blank" rel="noopener" class="c-val">
+                            Idenbrockpl. 5A, 48159 Münster
+                        </a>
+                    </div>
+                </div>
+                <div style="margin-top:36px;padding-top:28px;border-top:1px solid rgba(255,255,255,.08)">
+                    <a href="tel:025116244934" class="btn btn-gold" style="width:100%;justify-content:center;display:flex;">
+                        Jetzt anrufen &amp; Termin buchen
+                        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ===== REVIEWS ===== -->
+<section id="reviews">
+    <div class="container">
+        <div class="rev-head reveal">
+            <div class="sec-label">Le Recensioni</div>
+            <h2 class="sec-title">Was unsere Kunden <em>sagen</em></h2>
+            <div class="rating-row">
+                <span class="r-big">4,6</span>
+                <div>
+                    <div class="r-stars">★★★★★</div>
+                    <div class="r-meta">84 Google-Bewertungen</div>
+                </div>
+            </div>
+        </div>
+        <div class="rev-grid">
+            <div class="rev-card reveal">
+                <div class="rev-q">"</div>
+                <div class="rev-stars">★★★★★</div>
+                <p class="rev-text">War heute wieder dort und bin absolut begeistert. Super Service, entspannte Atmosphäre und handwerklich einfach top. Man merkt sofort, dass hier mit Leidenschaft gearbeitet wird.</p>
+                <div class="rev-author">
+                    <div class="rev-avatar">D</div>
+                    <div>
+                        <div class="rev-name">Di Piazza Uomo E Donna</div>
+                        <div class="rev-date">vor 2 Monaten · Google · 100% Italy</div>
+                    </div>
+                </div>
+            </div>
+            <div class="rev-card reveal">
+                <div class="rev-q">"</div>
+                <div class="rev-stars">★★★★★</div>
+                <p class="rev-text">Immer freundlich und kompetent! Gehe gerne dorthin, Termine werden eingehalten, Chef und alle Damen schneiden vorzüglich!</p>
+                <div class="rev-author">
+                    <div class="rev-avatar">H</div>
+                    <div>
+                        <div class="rev-name">Horst Dübner</div>
+                        <div class="rev-date">vor einem Jahr · Google</div>
+                    </div>
+                </div>
+            </div>
+            <div class="rev-card reveal">
+                <div class="rev-q">"</div>
+                <div class="rev-stars">★★★★★</div>
+                <p class="rev-text">Ich war dort zum Spitzen schneiden und wurde von einer sehr freundlichen jungen Frau empfangen. Sie beriet mich sehr gut und schnitt mir meine Haare wirklich toll.</p>
+                <div class="rev-author">
+                    <div class="rev-avatar">L</div>
+                    <div>
+                        <div class="rev-name">Lenchen K.</div>
+                        <div class="rev-date">vor 4 Jahren · Google</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ===== CTA ===== -->
+<section id="cta">
+    <div class="container">
+        <div class="sec-label">Prenota un appuntamento</div>
+        <h2 class="sec-title">Bereit für Ihren<br><em>neuen Look?</em></h2>
+        <p class="sec-sub">Rufen Sie uns an — wir finden gemeinsam den perfekten Termin.</p>
+        <a href="tel:025116244934" class="btn-white">
+            📞 0251 1624493 — Jetzt anrufen
+        </a>
+    </div>
+</section>
+
+<!-- ===== LOCATION ===== -->
+<section id="location">
+    <div class="container">
+        <div class="loc-grid">
+            <div>
+                <div class="sec-label">Dove siamo</div>
+                <h2 class="sec-title">So finden Sie <em>uns</em></h2>
+                <p class="sec-sub">Wir befinden uns am Idenbrockplatz in Münster — gut erreichbar mit Bus und Auto.</p>
+                <div class="loc-info-box">
+                    <strong>Friseursalon Mauro Ricardo</strong><br>
+                    Idenbrockpl. 5A<br>
+                    48159 Münster<br><br>
+                    📞 <a href="tel:025116244934">0251 1624493</a><br>
+                    🕐 Mo–Fr: 09:00 – 18:00 Uhr
+                </div>
+                <div style="margin-top:24px">
+                    <a href="https://maps.google.com/?q=Idenbrockplatz+5A+48159+Munster" target="_blank" rel="noopener" class="btn btn-gold">
+                        Route planen
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+                    </a>
+                </div>
+            </div>
+            <div class="map-box">
+                <!-- DSGVO: Google Maps wird erst nach ausdrücklicher Zustimmung geladen -->
+                <div class="map-consent" id="mapConsent">
+                    <svg width="46" height="46" viewBox="0 0 24 24" fill="none" stroke="#C9A84C" stroke-width="1.4">
+                        <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/>
+                    </svg>
+                    <h3>Standort auf Google Maps</h3>
+                    <p>Mit dem Laden der Karte akzeptieren Sie die Datenschutzerklärung von Google.
+                       Dabei wird u.&nbsp;a. Ihre IP-Adresse an Google übertragen.</p>
+                    <button type="button" class="btn btn-gold" id="loadMapBtn">Karte anzeigen</button>
+                    <label class="map-remember">
+                        <input type="checkbox" id="mapRemember"> Auswahl merken
+                    </label>
+                    <a href="datenschutz.html" class="map-dslink">Mehr in der Datenschutzerklärung</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ===== FOOTER ===== -->
+<footer>
+    <div class="container">
+        <div class="foot-top">
+            <div>
+                <div class="foot-logo">Mauro <em>Ricardo</em></div>
+                <div class="foot-tag">La bellezza italiana · Münster</div>
+            </div>
+            <ul class="foot-links">
+                <li><a href="#about">Über uns</a></li>
+                <li><a href="#services">Leistungen</a></li>
+                <li><a href="#hours">Öffnungszeiten</a></li>
+                <li><a href="#reviews">Bewertungen</a></li>
+                <li><a href="#location">Kontakt</a></li>
+            </ul>
+        </div>
+        <div class="foot-bottom">
+            <p class="foot-copy">© 2025 Friseursalon Mauro Ricardo · Idenbrockpl. 5A, 48159 Münster · 0251 1624493</p>
+            <ul class="foot-links">
+                <li><a href="impressum.html">Impressum</a></li>
+                <li><a href="datenschutz.html">Datenschutz</a></li>
+                <li><a href="agb.html">AGB</a></li>
+                <li><a href="#" id="cookieSettings">Cookie-Einstellungen</a></li>
+            </ul>
+        </div>
+        <div class="foot-bottom" style="margin-top:18px">
+            <span></span>
+            <div class="foot-it">Fatto con ❤️ in Italia</div>
+        </div>
+    </div>
+</footer>
+
+<!-- ===== COOKIE-BANNER ===== -->
+<div class="cookie-banner" id="cookieBanner" role="dialog" aria-live="polite" aria-label="Cookie-Hinweis">
+    <div class="cookie-it">La tua privacy · Ihre Privatsphäre</div>
+    <h4>Wir respektieren Ihre Daten</h4>
+    <p>
+        Diese Website verwendet ausschließlich technisch notwendige Cookies und lädt
+        keine externen Schriften oder Tracker. Externe Inhalte wie Google Maps werden
+        erst nach Ihrer ausdrücklichen Zustimmung geladen. Mehr dazu in unserer
+        <a href="datenschutz.html">Datenschutzerklärung</a>.
+    </p>
+    <div class="cookie-actions">
+        <button type="button" class="btn btn-gold" id="cookieAccept">Verstanden</button>
+        <a href="datenschutz.html" class="btn-outline" style="display:inline-flex;align-items:center;text-decoration:none">Datenschutz</a>
+    </div>
+</div>
+
+<!-- ===== SCRIPTS ===== -->
+<script>
+/* ─── Three.js hero particles ─── */
+(function() {
+    const canvas = document.getElementById('hero-canvas');
+    const scene  = new THREE.Scene();
+    const cam    = new THREE.PerspectiveCamera(60, innerWidth/innerHeight, .1, 1000);
+    const rend   = new THREE.WebGLRenderer({ canvas, alpha: true, antialias: true });
+
+    rend.setSize(innerWidth, innerHeight);
+    rend.setPixelRatio(Math.min(devicePixelRatio, 2));
+    cam.position.z = 30;
+
+    /* Particles */
+    const N = 700;
+    const geo = new THREE.BufferGeometry();
+    const pos = new Float32Array(N * 3);
+    const col = new Float32Array(N * 3);
+    const vel = [];
+
+    for (let i = 0; i < N; i++) {
+        pos[i*3]   = (Math.random()-.5) * 90;
+        pos[i*3+1] = (Math.random()-.5) * 55;
+        pos[i*3+2] = (Math.random()-.5) * 18 - 4;
+        const t = Math.random();
+        col[i*3]   = .72 + t*.22;
+        col[i*3+1] = .58 + t*.18;
+        col[i*3+2] = .10 + t*.12;
+        vel.push({
+            dx: (Math.random()-.5) * .014,
+            dy: (Math.random()-.5) * .007,
+            off: Math.random() * Math.PI * 2,
+            spd: .4 + Math.random() * .7
+        });
+    }
+
+    geo.setAttribute('position', new THREE.BufferAttribute(pos, 3));
+    geo.setAttribute('color',    new THREE.BufferAttribute(col, 3));
+
+    const mat = new THREE.PointsMaterial({
+        size: .28,
+        vertexColors: true,
+        transparent: true,
+        opacity: .55,
+        blending: THREE.AdditiveBlending,
+        depthWrite: false
+    });
+    const pts = new THREE.Points(geo, mat);
+    scene.add(pts);
+
+    /* Hair strand lines */
+    for (let l = 0; l < 14; l++) {
+        const sx = (Math.random()-.5)*70, sy = (Math.random()-.5)*44;
+        const lPts = [];
+        for (let p = 0; p < 22; p++) {
+            lPts.push(new THREE.Vector3(
+                sx + Math.sin(p*.28 + l) * (2 + Math.random()*2),
+                sy - p * 1.4,
+                (Math.random()-.5)*4
+            ));
+        }
+        const lg  = new THREE.BufferGeometry().setFromPoints(lPts);
+        const lm  = new THREE.LineBasicMaterial({
+            color: 0xC9A84C, transparent: true,
+            opacity: .06 + Math.random()*.12
+        });
+        scene.add(new THREE.Line(lg, lm));
+    }
+
+    let t = 0;
+    const pArr = pts.geometry.attributes.position.array;
+
+    function loop() {
+        requestAnimationFrame(loop);
+        t += .007;
+        for (let i = 0; i < N; i++) {
+            pArr[i*3]   += vel[i].dx;
+            pArr[i*3+1] += Math.sin(t * vel[i].spd + vel[i].off) * .007;
+            if (pArr[i*3] >  45) pArr[i*3] = -45;
+            if (pArr[i*3] < -45) pArr[i*3] =  45;
+            if (pArr[i*3+1] >  27) pArr[i*3+1] = -27;
+            if (pArr[i*3+1] < -27) pArr[i*3+1] =  27;
+        }
+        pts.geometry.attributes.position.needsUpdate = true;
+        pts.rotation.z = Math.sin(t*.08) * .04;
+        rend.render(scene, cam);
+    }
+    loop();
+
+    window.addEventListener('resize', () => {
+        cam.aspect = innerWidth/innerHeight;
+        cam.updateProjectionMatrix();
+        rend.setSize(innerWidth, innerHeight);
+    });
+})();
+
+/* ─── GSAP ─── */
+gsap.registerPlugin(ScrollTrigger);
+
+/* Hero entrance */
+gsap.to('.hero-text', {
+    opacity: 1, y: 0, duration: 1.3, ease: 'power3.out', delay: .25
+});
+
+/* Scissors snipping animation (pivot 150,180) */
+const PIV = '150px 180px';
+const scTimeline = gsap.timeline({ repeat: -1 });
+scTimeline
+    .to('#sc-b1', { rotation:  16, duration: 1.0, ease: 'power2.inOut', transformOrigin: PIV })
+    .to('#sc-b2', { rotation: -16, duration: 1.0, ease: 'power2.inOut', transformOrigin: PIV }, '<')
+    .to('#sc-b1', { rotation:  0,  duration: .9,  ease: 'power2.inOut', transformOrigin: PIV })
+    .to('#sc-b2', { rotation:  0,  duration: .9,  ease: 'power2.inOut', transformOrigin: PIV }, '<')
+    .to({}, { duration: .6 });
+
+/* Slow rotating outer ring */
+gsap.to('#ring-rot', { rotation: 360, duration: 60, repeat: -1, ease: 'none', transformOrigin: '150px 150px' });
+
+/* Falling hair snippets */
+['#snip1', '#snip2', '#snip3'].forEach((s, i) => {
+    gsap.fromTo(s,
+        { y: 0, opacity: 0 },
+        { y: 90, opacity: 0, keyframes: [{opacity:.5, duration:.3},{opacity:.5},{opacity:0}],
+          duration: 2.4, repeat: -1, delay: i * .8, ease: 'power1.in' }
+    );
+});
+
+/* ─── Random floating badges within the right hero half ─── */
+(function() {
+    const hero    = document.getElementById('hero');
+    const badges  = [...document.querySelectorAll('.float-badge')];
+    const rnd     = (a, b) => a + Math.random() * (b - a);
+
+    // compute right-half bounds for a badge of given size
+    function bounds(bw, bh) {
+        const hw = hero.clientWidth, hh = hero.clientHeight;
+        const pad = 28;
+        return {
+            minX: hw * 0.50,
+            maxX: hw - bw - pad,
+            minY: 96,
+            maxY: hh - bh - pad
+        };
+    }
+
+    function drift(el) {
+        const bw = el.offsetWidth, bh = el.offsetHeight;
+        const b  = bounds(bw, bh);
+        if (b.maxX <= b.minX || b.maxY <= b.minY) {           // mobile / hidden
+            return gsap.delayedCall(2, () => drift(el));
+        }
+        gsap.to(el, {
+            left:     rnd(b.minX, b.maxX),
+            top:      rnd(b.minY, b.maxY),
+            rotation: rnd(-5, 5),
+            duration: rnd(5, 9),
+            ease:     'sine.inOut',
+            onComplete: () => drift(el)
+        });
+    }
+
+    badges.forEach((el, i) => {
+        // switch from corner CSS (right/bottom) to absolute left/top
+        const r  = el.getBoundingClientRect();
+        const hr = hero.getBoundingClientRect();
+        gsap.set(el, {
+            left: r.left - hr.left,
+            top:  r.top  - hr.top,
+            right: 'auto',
+            bottom: 'auto',
+            margin: 0
+        });
+        gsap.delayedCall(i * 0.6, () => drift(el));
+    });
+})();
+
+/* Scissors 3D tilt on mouse */
+const heroEl = document.getElementById('hero');
+heroEl.addEventListener('mousemove', e => {
+    const xR = (e.clientX / innerWidth  - .5) * 2;
+    const yR = (e.clientY / innerHeight - .5) * 2;
+    gsap.to('#svg-sc', {
+        rotationY: xR * 18,
+        rotationX: -yR * 12,
+        duration: 1.2,
+        ease: 'power2.out',
+        transformPerspective: 900
+    });
+});
+heroEl.addEventListener('mouseleave', () => {
+    gsap.to('#svg-sc', {
+        rotationY: 0, rotationX: 0,
+        duration: 1.4, ease: 'power2.out'
+    });
+});
+
+/* Scroll reveals */
+gsap.utils.toArray('.reveal').forEach((el, i) => {
+    gsap.fromTo(el,
+        { opacity: 0, y: 50 },
+        {
+            opacity: 1, y: 0,
+            duration: .9,
+            ease: 'power3.out',
+            delay: (i % 3) * .12,
+            scrollTrigger: { trigger: el, start: 'top 86%', toggleActions: 'play none none none' }
+        }
+    );
+});
+
+/* About section slide-in */
+gsap.fromTo('.img-wrap',
+    { opacity: 0, x: -50 },
+    { opacity: 1, x: 0, duration: 1.1, ease: 'power3.out',
+      scrollTrigger: { trigger: '#about', start: 'top 72%' } }
+);
+gsap.fromTo('.about-body',
+    { opacity: 0, x: 50 },
+    { opacity: 1, x: 0, duration: 1.1, ease: 'power3.out',
+      scrollTrigger: { trigger: '#about', start: 'top 72%' } }
+);
+
+/* Hours list stagger */
+gsap.fromTo('.h-row',
+    { opacity: 0, x: -22 },
+    {
+        opacity: 1, x: 0,
+        duration: .55,
+        stagger: .09,
+        ease: 'power2.out',
+        scrollTrigger: { trigger: '#hours', start: 'top 72%' }
+    }
+);
+
+/* Navbar scroll class */
+const nav = document.getElementById('navbar');
+window.addEventListener('scroll', () => {
+    nav.classList.toggle('scrolled', scrollY > 60);
+}, { passive: true });
+
+/* Mobile nav */
+const burger   = document.getElementById('burger');
+const mobileNav = document.getElementById('mobileNav');
+let open = false;
+
+burger.addEventListener('click', () => {
+    open = !open;
+    mobileNav.classList.toggle('open', open);
+    const spans = burger.querySelectorAll('span');
+    if (open) {
+        gsap.to(spans[0], { rotation: 45, y: 7,  duration: .3 });
+        gsap.to(spans[1], { opacity: 0,           duration: .2 });
+        gsap.to(spans[2], { rotation: -45, y: -7, duration: .3 });
+    } else {
+        gsap.to(spans[0], { rotation: 0, y: 0,  duration: .3 });
+        gsap.to(spans[1], { opacity: 1,          duration: .2 });
+        gsap.to(spans[2], { rotation: 0, y: 0,  duration: .3 });
+    }
+});
+
+function closeMob() {
+    open = false;
+    mobileNav.classList.remove('open');
+    const spans = burger.querySelectorAll('span');
+    gsap.to(spans[0], { rotation: 0, y: 0, duration: .3 });
+    gsap.to(spans[1], { opacity: 1,        duration: .2 });
+    gsap.to(spans[2], { rotation: 0, y: 0, duration: .3 });
+}
+window.closeMob = closeMob;
+
+/* ─── DSGVO: Cookie-Banner ─── */
+(function() {
+    const banner   = document.getElementById('cookieBanner');
+    const acceptBt = document.getElementById('cookieAccept');
+    const settings = document.getElementById('cookieSettings');
+    const KEY = 'mr_cookie_ack';
+
+    function showBanner() {
+        banner.classList.add('show');
+        gsap.fromTo(banner, { y: 20, opacity: 0 }, { y: 0, opacity: 1, duration: .5, ease: 'power3.out' });
+    }
+    function hideBanner() {
+        gsap.to(banner, { y: 20, opacity: 0, duration: .35, ease: 'power2.in',
+            onComplete: () => banner.classList.remove('show') });
+    }
+    if (!localStorage.getItem(KEY)) {
+        setTimeout(showBanner, 1200);
+    }
+    acceptBt.addEventListener('click', () => {
+        localStorage.setItem(KEY, '1');
+        hideBanner();
+    });
+    if (settings) settings.addEventListener('click', e => { e.preventDefault(); showBanner(); });
+})();
+
+/* ─── DSGVO: Google Maps Consent-Gate ─── */
+(function() {
+    const consent  = document.getElementById('mapConsent');
+    const loadBtn  = document.getElementById('loadMapBtn');
+    const remember = document.getElementById('mapRemember');
+    const MAP_KEY  = 'mr_maps_ok';
+    if (!consent || !loadBtn) return;
+
+    function loadMap() {
+        const box = consent.parentElement;
+        box.innerHTML =
+            '<iframe src="https://maps.google.com/maps?q=Idenbrockplatz+5A+48159+Muenster&output=embed" ' +
+            'allowfullscreen loading="lazy" referrerpolicy="no-referrer-when-downgrade" ' +
+            'style="width:100%;height:100%;border:none" title="Friseursalon Mauro Ricardo – Standort"></iframe>';
+    }
+    if (localStorage.getItem(MAP_KEY) === '1') loadMap();
+
+    loadBtn.addEventListener('click', () => {
+        if (remember && remember.checked) localStorage.setItem(MAP_KEY, '1');
+        loadMap();
+    });
+})();
+</script>
+</body>
+</html>
