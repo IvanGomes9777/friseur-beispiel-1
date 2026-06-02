@@ -44,6 +44,8 @@
             font-size: 16px;
             scrollbar-width: none;        /* Firefox */
             -ms-overflow-style: none;     /* alte Edge/IE */
+            width: 100%;
+            overflow-x: hidden;           /* verhindert weißen Balken rechts */
         }
         html::-webkit-scrollbar { width: 0; height: 0; display: none; } /* Chrome/Safari/Edge */
 
@@ -51,6 +53,8 @@
             font-family: 'Montserrat', sans-serif;
             background: var(--cream);
             color: var(--text);
+            width: 100%;
+            max-width: 100%;
             overflow-x: hidden;
         }
         body::-webkit-scrollbar { width: 0; height: 0; display: none; }
@@ -888,7 +892,7 @@
             font-size: .9rem;
             margin-top: 4px;
         }
-        .foot-links { list-style: none; display: flex; gap: 28px; }
+        .foot-links { list-style: none; display: flex; flex-wrap: wrap; gap: 14px 28px; }
         .foot-links a {
             font-size: .72rem;
             font-weight: 500;
@@ -984,7 +988,8 @@
             .rev-grid { grid-template-columns: 1fr 1fr; }
             .loc-grid { grid-template-columns: 1fr; }
             .foot-top { flex-direction: column; gap: 28px; }
-            .foot-bottom { flex-direction: column; gap: 8px; text-align: center; }
+            .foot-bottom { flex-direction: column; gap: 14px; text-align: center; }
+            .foot-bottom .foot-links { justify-content: center; }
         }
         @media (max-width: 768px) {
             :root { --gap: 80px; }
@@ -997,6 +1002,15 @@
             .svc-grid { grid-template-columns: 1fr; }
             .rev-grid { grid-template-columns: 1fr; }
             .feats { grid-template-columns: 1fr; }
+            footer { padding: 48px 0 30px; }
+            .foot-copy { line-height: 1.6; }
+        }
+        @media (max-width: 480px) {
+            .container { padding: 0 22px; }
+            nav, nav.scrolled { padding-left: 22px; padding-right: 22px; }
+            .foot-links { gap: 12px 18px; }
+            .foot-links a { font-size: .68rem; letter-spacing: .05em; }
+            .foot-copy { font-size: .68rem; }
         }
 
         /* ===== Mobile nav panel ===== */
