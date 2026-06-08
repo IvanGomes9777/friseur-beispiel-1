@@ -1,6 +1,6 @@
-# Friseursalon Mauro Ricardo — Webseite
+# Salon Beispiel — Webseite
 
-Statische Website für den Friseursalon Mauro Ricardo in Münster.
+Statische Website für den Salon Beispiel in Musterstadt.
 Italienisches Design, 3D-Animationen (three.js + GSAP), DSGVO-konform.
 
 ## Tech
@@ -23,6 +23,6 @@ Wird über Vercel deployed (statische Site, kein Build-Schritt).
 
 ## Vor Live-Schaltung ausfüllen
 - Vollständiger Name des Inhabers (Impressum + Datenschutz)
-- E-Mail-Adresse (Platzhalter: info@mauro-ricardo.de)
+- E-Mail-Adresse (Platzhalter: info@salon-beispiel.example)
 - USt-IdNr. (falls vorhanden)
 - Rechtstexte anwaltlich prüfen lassen
